@@ -10,12 +10,14 @@ namespace ISIP324_Kovalenko
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Введите количество операций ( от 2 до 40 ): ");
             int n = Convert.ToInt32(Console.ReadLine());
             while (n > 40 || n < 2)
             {
                 Console.WriteLine("Не валидное количество операций");
-                Console.WriteLine("Введите количество операций: ");
+                Console.WriteLine("Введите количество операций ( от 2 до 40 ): ");
                 n = Convert.ToInt32(Console.ReadLine());
+   
             }
 
             List<string> names = new List<string>();
@@ -60,7 +62,7 @@ namespace ISIP324_Kovalenko
                         ConvertValue(prices);
                         break;
                     case "5":
-                        Search(names, prices);
+                        SearchbyName(names, prices);
                         break;
                     case "0":
                         exit = true;
@@ -76,7 +78,7 @@ namespace ISIP324_Kovalenko
         {
             for (int i = 0; i < names.Count; i++)
             {
-                Console.WriteLine($"Предмет: {names}, {prices[i]} руб");
+                Console.WriteLine($" {i + 1}. Предмет: {names[i]}, {prices[i]} руб");
             }
 
         }
@@ -123,15 +125,15 @@ namespace ISIP324_Kovalenko
         static void ConvertValue(List<double> prices)
         {
             Console.WriteLine("1.USD (Курс 84 руб)");
-            Console.WriteLine("1.EURO (Курс 97 руб)");
-            Console.WriteLine("1.BYN (Курс 28 руб)");
+            Console.WriteLine("2.EURO (Курс 97 руб)");
+            Console.WriteLine("3.BYN (Курс 28 руб)");
 
             string choice = Console.ReadLine();
             int rate = 0;
 
-            if (rate == 1) rate = 84;
-            else if (rate == 2) rate = 97;
-            else if (rate == 3) rate = 28;
+            if (choice == "1") rate = 84;
+            else if (choice == "2") rate = 97;
+            else if (choice == "3") rate = 28;
 
             if (rate < 0)
             {
@@ -139,14 +141,14 @@ namespace ISIP324_Kovalenko
                 return;
             }
 
-            Console.WriteLine($"Сумма в пересчёте на {rate}");
+            Console.WriteLine($"\nСуммы в пересчете (курс {rate}):");
             for (int i = 0; i < prices.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {prices[i]} руб = {prices[i] / rate} ");
+                Console.WriteLine($"{i + 1}. {prices[i] / rate}");
             }
         }
 
-        static void Search(List<string> names, List<double> prices)
+        static void SearchbyName(List<string> names, List<double> prices)
         {
             Console.WriteLine("Введите название предмета: ");
             string searchName = Console.ReadLine();
