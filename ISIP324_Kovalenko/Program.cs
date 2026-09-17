@@ -47,30 +47,8 @@ namespace ISIP324_Kovalenko
                 Category = category;
                 nextCode++;
             }
-            
-            public void DeleteProduct()
-            {
-                Name = null;
-                Price = 0;
-                Quantity = 0;
-                InStock = false;
-                Category = null;
-            }
-
-            public void AddProduct(int quantity)
-            {
-                if (quantity < 0)
-                {
-                    Console.WriteLine("Количество товара не может быть отрицательным");
-                    return;
-                }
-                Quantity += quantity;
-                InStock = Quantity > 0;
-            }
-
 
         }
-
         enum Categories
         {
             "Электроника",
@@ -79,6 +57,37 @@ namespace ISIP324_Kovalenko
         }
         static void Main(string[] args)
         {
+            List<Product> products = new List<Product>();
+            void AddProduct(List<Product> products)
+            {
+                Console.WriteLine("Введите название товара:");
+                string name = Console.ReadLine();
+                Console.WriteLine("Введите цену товара:");
+                decimal price = Convert.ToDecimal(Console.ReadLine());
+                Console.WriteLine("Введите количество товара:");
+                int quantity = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Введите категорию товара (Электроника, Одежда, Продукты):");
+                string category = Console.ReadLine();
+                Product product = new Product(name, price, quantity, category);
+                products.Add(product);
+            }
+
+            void DeleteProduct(List<Product> products)
+            {
+                Console.WriteLine("Введите код товара,который хотите удалить:");
+                int code = Convert.ToInt32(Console.ReadLine());
+                Product products = products.Find(p => p.code == code);
+                if (product != null)
+                {
+                    products.Remove(product);
+                    Console.WriteLine("Товар удален");
+                }
+                else
+                {
+                    Console.WriteLine("Товар с таким кодом не найден");
+                }
+            }
+
             //Создайте консольное приложение C# для учёта товаров в магазине. 
 
             //У товара должны быть следующее параметры:
