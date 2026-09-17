@@ -8,15 +8,15 @@ namespace ISIP324_Kovalenko
 {
     internal class Program
     {
-        class Product
+        public class Product
         {
-            static int nextCode = 1;
-            int code = nextCode;
-            string Name;
-            decimal Price;
-            int Quantity;
-            bool InStock;
-            Categories Category;
+            public static int nextCode = 1;
+             public int code = nextCode;
+            public string Name;
+            public decimal Price;
+            public int Quantity;
+            public bool InStock;
+            public string Category;
 
             public Product(string name, decimal price, int quantity, string category)
             {
@@ -49,12 +49,8 @@ namespace ISIP324_Kovalenko
             }
 
         }
-        enum Categories
-        {
-            "Электроника",
-            "Одежда",
-            "Продукты"
-        }
+
+
         static void Main(string[] args)
         {
             List<Product> products = new List<Product>();
@@ -76,7 +72,7 @@ namespace ISIP324_Kovalenko
             {
                 Console.WriteLine("Введите код товара,который хотите удалить:");
                 int code = Convert.ToInt32(Console.ReadLine());
-                Product products = products.Find(p => p.code == code);
+                Product product = products.Find(p => p.code == code);
                 if (product != null)
                 {
                     products.Remove(product);
@@ -88,6 +84,165 @@ namespace ISIP324_Kovalenko
                 }
             }
 
+            void OrderProduct(List<Product> products)
+            {
+                Console.WriteLine("Введите код товара,который хотите заказать:");
+                int code = Convert.ToInt32(Console.ReadLine());
+                Product product = products.Find(p => p.code == code);
+                if (product != null)
+                {
+                    Console.WriteLine("Введите количество товара,которое хотите заказать:");
+                    int quantity = Convert.ToInt32(Console.ReadLine());
+                    product.Quantity += quantity;
+                    product.InStock = true;
+                    Console.WriteLine("Товар заказан");
+                }
+                else
+                {
+                    Console.WriteLine("Товар с таким кодом не найден");
+                }
+            }
+
+            void BuyProduct(List<Product> products)
+            {
+                Console.WriteLine("Введите код товара,который хотите купить:");
+                int code = Convert.ToInt32(Console.ReadLine());
+                Product product = products.Find(p => p.code == code);
+                if (product != null)
+                {
+                    if (product.InStock)
+                    {
+                        Console.WriteLine("Введите количество товара,которое хотите купить:");
+                        int quantity = Convert.ToInt32(Console.ReadLine());
+                        if (quantity <= product.Quantity)
+                        {
+                            product.Quantity -= quantity;
+                            if (product.Quantity == 0)
+                            {
+                                product.InStock = false;
+                            }
+                            Console.WriteLine("Товар куплен");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Недостаточно товара на складе");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Товара нет в наличии");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Товар с таким кодом не найден");
+                }
+            }
+
+            void SellProduct(List<Product> products)
+            {
+                Console.WriteLine("Введите код товара,который хотите продать:");
+                int code = Convert.ToInt32(Console.ReadLine());
+                Product product = products.Find(p => p.code == code);
+                if (product != null)
+                {
+                    if (product.InStock)
+                    {
+                        Console.WriteLine("Введите количество товара,которое хотите продать:");
+                        int quantity = Convert.ToInt32(Console.ReadLine());
+                        if (quantity <= product.Quantity)
+                        {
+                            product.Quantity -= quantity;
+                            if (product.Quantity == 0)
+                            {
+                                product.InStock = false;
+                            }
+                            Console.WriteLine("Товар продан");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Недостаточно товара на складе");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Товара нет в наличии");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Товар с таким кодом не найден");
+                }
+            }
+            void SearchProduct(List<Product> products)
+            {
+                Console.WriteLine("Как вы хотите искать товар? (1.по коду, 2.по названию или 3.по категории)");
+                string searchType = Console.ReadLine();
+                Product product = null;
+                switch (searchType)
+                {
+                    case "1":
+                        Console.WriteLine("Введите код товара,который хотите найти:");
+                        int code = Convert.ToInt32(Console.ReadLine());
+                        product = products.Find(p => p.code == code);
+                        break;
+                    case "2":
+                        Console.WriteLine("Введите название товара,который хотите найти:");
+                        string name = Console.ReadLine();
+                        product = products.Find(p => p.Name == name);
+                        break;
+                    case "3":
+                        Console.WriteLine("Введите категорию товара,который хотите найти:");
+                        string category = Console.ReadLine();
+                        product = products.Find(p => p.Category == category);
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестный тип поиска");
+                        break;
+                }
+                if (product != null)
+                {
+                    Console.WriteLine("Код: " + product.code);
+                    Console.WriteLine("Название: " + product.Name);
+                    Console.WriteLine("Цена: " + product.Price);
+                    Console.WriteLine("Количество: " + product.Quantity);
+                    Console.WriteLine("В наличии: " + product.InStock);
+                    Console.WriteLine("Категория: " + product.Category);
+                }
+                else
+                {
+                    Console.WriteLine("Товар с таким кодом не найден");
+                }
+            }
+
+            while (true)
+            {
+                Console.WriteLine("Введите команду (Добавить, Удалить, Заказать, Продать, Найти, Выход):");
+                string command = Console.ReadLine();
+                switch (command)
+                {
+                    case "Добавить":
+                        AddProduct(products);
+                        break;
+                    case "Удалить":
+                        DeleteProduct(products);
+                        break;
+                    case "Заказать":
+                        OrderProduct(products);
+                        break;
+                    case "Продать":
+                        SellProduct(products);
+                        break;
+                    case "Найти":
+                        SearchProduct(products);
+                        break;
+                    case "Выход":
+                        return;
+                    default:
+                        Console.WriteLine("Неизвестная команда");
+                        break;
+                }
+            }
             //Создайте консольное приложение C# для учёта товаров в магазине. 
 
             //У товара должны быть следующее параметры:
