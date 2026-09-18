@@ -54,7 +54,7 @@ namespace ISIP324_Kovalenko
         static void Main(string[] args)
         {
             List<Product> products = new List<Product>();
-            void AddProduct(List<Product> products)
+            void AddProduct()
             {
                 Console.WriteLine("Введите название товара:");
                 string name = Console.ReadLine();
@@ -68,7 +68,7 @@ namespace ISIP324_Kovalenko
                 products.Add(product);
             }
 
-            void DeleteProduct(List<Product> products)
+            void DeleteProduct()
             {
                 Console.WriteLine("Введите код товара,который хотите удалить:");
                 int code = Convert.ToInt32(Console.ReadLine());
@@ -84,7 +84,7 @@ namespace ISIP324_Kovalenko
                 }
             }
 
-            void OrderProduct(List<Product> products)
+            void OrderProduct()
             {
                 Console.WriteLine("Введите код товара,который хотите заказать:");
                 int code = Convert.ToInt32(Console.ReadLine());
@@ -103,7 +103,7 @@ namespace ISIP324_Kovalenko
                 }
             }
 
-            void BuyProduct(List<Product> products)
+            void BuyProduct()
             {
                 Console.WriteLine("Введите код товара,который хотите купить:");
                 int code = Convert.ToInt32(Console.ReadLine());
@@ -116,7 +116,7 @@ namespace ISIP324_Kovalenko
                         int quantity = Convert.ToInt32(Console.ReadLine());
                         if (quantity <= product.Quantity)
                         {
-                            product.Quantity -= quantity;
+                            product.Quantity += quantity;
                             if (product.Quantity == 0)
                             {
                                 product.InStock = false;
@@ -139,7 +139,7 @@ namespace ISIP324_Kovalenko
                 }
             }
 
-            void SellProduct(List<Product> products)
+            void SellProduct()
             {
                 Console.WriteLine("Введите код товара,который хотите продать:");
                 int code = Convert.ToInt32(Console.ReadLine());
@@ -174,7 +174,7 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Товар с таким кодом не найден");
                 }
             }
-            void SearchProduct(List<Product> products)
+            void SearchProduct()
             {
                 Console.WriteLine("Как вы хотите искать товар? (1.по коду, 2.по названию или 3.по категории)");
                 string searchType = Console.ReadLine();
@@ -217,63 +217,32 @@ namespace ISIP324_Kovalenko
 
             while (true)
             {
-                Console.WriteLine("Введите команду (Добавить, Удалить, Заказать, Продать, Найти, Выход):");
+                Console.WriteLine("Введите команду (1.Добавить, 2.Удалить, 3.Заказать, 4.Продать, 5.Найти, 6.Выход):");
                 string command = Console.ReadLine();
                 switch (command)
                 {
-                    case "Добавить":
-                        AddProduct(products);
+                    case "1":
+                        AddProduct();
                         break;
-                    case "Удалить":
-                        DeleteProduct(products);
+                    case "2":
+                        DeleteProduct();
                         break;
-                    case "Заказать":
-                        OrderProduct(products);
+                    case "3":
+                        OrderProduct();
                         break;
-                    case "Продать":
-                        SellProduct(products);
+                    case "4":
+                        SellProduct();
                         break;
-                    case "Найти":
-                        SearchProduct(products);
+                    case "5":
+                        SearchProduct();
                         break;
-                    case "Выход":
+                    case "6":
                         return;
                     default:
                         Console.WriteLine("Неизвестная команда");
                         break;
                 }
             }
-            //Создайте консольное приложение C# для учёта товаров в магазине. 
-
-            //У товара должны быть следующее параметры:
-
-            //Уникальный код(начинается с "1", должен автоматически ставиться при пополнении списка товаров)
-
-            //Название
-
-            //Цена
-
-            //Количество
-
-            //Остался ли ещё товар на складе
-
-            //Категория(выбирается из имеющихся, задаются в коде, сделайте как минимум 3)
-
-
-            //Мы можем работать с товаром через команды:
-
-            //            Добавить товар
-
-            //Удалить товар
-
-            //Заказать поставку товара
-
-            //Продать товар
-
-            //Поиск товаров(по коду, названию и категории).Необходимо выводить полную информацию о товаре.
-
-
-            //Для выполнения задания используйте все возможности языка C#, изученные ранее (классы, списки, перечисления и так далее).Обязательно заполните список товаров пятью тестовыми данными.Обязательно сделайте проверку всевозможных вводимых значений (не должно быть возможности создать пустой товар, с отрицательной ценой, с отрицательным количеством).Программа не должна вылетать в процессе работы.Программа должна выводить информацию в чётком и ясном виде для пользователя.При продаже товара, обязательно сделайте проверку остатка на складе.Не забудьте отправлять код по частям, разными коммитами, и делать комментарии к коммитам осмысленные.
-        }
+        }   
     }
 }
