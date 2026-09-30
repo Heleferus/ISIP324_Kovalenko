@@ -10,196 +10,155 @@ namespace ISIP324_Kovalenko
     {
         static void Main(string[] args)
         {
-            List<Product> products = new List<Product>();
-            void AddProduct()
+//            Необходимо написать программу, которая будет принимать текст от пользователя и делать над ним определённые действия.
+
+//Функциональные требования:
+         Console.WriteLine("Введите текст (минимум 100 символов):");
+         string[] words = Console.ReadLine().Split(new char[] { ' ', '\t', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length < 100)
+         {
+                Console.WriteLine("Текст должен содержать минимум 100 символов.");
+                return;
+         }
+
+
+            //Программа принимает от пользователя минимум 100 символов
+
+            //Подсчёт количества слов в тексте
+            void CountWords(string[] worrds)
             {
-                Console.WriteLine("Введите название товара:");
-                string name = Console.ReadLine();
-                Console.WriteLine("Введите цену товара:");
-                decimal price = Convert.ToDecimal(Console.ReadLine());
-                Console.WriteLine("Введите количество товара:");
-                int quantity = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Введите категорию товара (Электроника, Одежда, Продукты):");
-                string category = Console.ReadLine();
-                Product product = new Product(name, price, quantity, category);
-                products.Add(product);
+                int wordCount = 0;
+                foreach (string word in words)
+                {
+                    wordCount++;
+                }
+                Console.WriteLine($"Количество слов в тексте: {wordCount}");
             }
 
-            void DeleteProduct()
+            //Поиск самого короткого слова
+            void FindShortestWord(string[] worrrds)
             {
-                Console.WriteLine("Введите код товара,который хотите удалить:");
-                int code = Convert.ToInt32(Console.ReadLine());
-                Product product = products.Find(p => p.code == code);
-                if (product != null)
+                string shortestWord = words[0];
+                foreach (string word in words)
                 {
-                    products.Remove(product);
-                    Console.WriteLine("Товар удален");
-                }
-                else
-                {
-                    Console.WriteLine("Товар с таким кодом не найден");
-                }
-            }
-
-            void OrderProduct()
-            {
-                Console.WriteLine("Введите код товара,который хотите заказать:");
-                int code = Convert.ToInt32(Console.ReadLine());
-                Product product = products.Find(p => p.code == code);
-                if (product != null)
-                {
-                    Console.WriteLine("Введите количество товара,которое хотите заказать:");
-                    int quantity = Convert.ToInt32(Console.ReadLine());
-                    product.Quantity += quantity;
-                    product.InStock = true;
-                    Console.WriteLine("Товар заказан");
-                }
-                else
-                {
-                    Console.WriteLine("Товар с таким кодом не найден");
-                }
-            }
-
-            void BuyProduct()
-            {
-                Console.WriteLine("Введите код товара,который хотите купить:");
-                int code = Convert.ToInt32(Console.ReadLine());
-                Product product = products.Find(p => p.code == code);
-                if (product != null)
-                {
-                    if (product.InStock)
+                    if (word.Length < shortestWord.Length)
                     {
-                        Console.WriteLine("Введите количество товара,которое хотите купить:");
-                        int quantity = Convert.ToInt32(Console.ReadLine());
-                        if (quantity <= product.Quantity)
+                        shortestWord = word;
+                    }
+                }
+                Console.WriteLine($"Самое короткое слово: {shortestWord}");
+            }
+
+            //Подсчёт количества предложений
+            void CountSentences(string ttext)
+            {
+                int sentenceCount = 0;
+                foreach (char c in ttext)
+                {
+                    if (c == '.' || c == '!' || c == '?')
+                    {
+                        sentenceCount++;
+                    }
+                }
+                Console.WriteLine($"Количество предложений в тексте: {sentenceCount}");
+            }
+
+            //Подсчёт количества гласных и согласных букв
+            void CountVowelsAndConsonants(string texxxt)
+            {
+                int vowelCount = 0;
+                int consonantCount = 0;
+                foreach (char c in texxxt.ToLower())
+                {
+                    if ("аеиоуыэюя".Contains(c))
+                    {
+                        vowelCount++;
+                    }
+                    else if (char.IsLetter(c))
+                    {
+                        consonantCount++;
+                    }
+                }
+                Console.WriteLine($"Количество гласных букв: {vowelCount}");
+                Console.WriteLine($"Количество согласных букв: {consonantCount}");
+            }
+
+            //Поиск самого длинного слова
+            void FindLongestWord(string[] wwords)
+            {
+                string longestWord = words[0];
+                foreach (string word in words)
+                {
+                    if (word.Length > longestWord.Length)
+                    {
+                        longestWord = word;
+                    }
+                }
+                Console.WriteLine($"Самое длинное слово: {longestWord}");
+            }
+
+            //Создание статистики по частоте встречаемости каждой буквы
+            void LetterFrequency(string texxt)
+            {
+                Dictionary<char, int> letterCount = new Dictionary<char, int>();
+                foreach (char c in texxt.ToLower())
+                {
+                    if (char.IsLetter(c))
+                    {
+                        if (letterCount.ContainsKey(c))
                         {
-                            product.Quantity += quantity;
-                            if (product.Quantity == 0)
-                            {
-                                product.InStock = false;
-                            }
-                            Console.WriteLine("Товар куплен");
+                            letterCount[c]++;
                         }
                         else
                         {
-                            Console.WriteLine("Недостаточно товара на складе");
+                            letterCount[c] = 1;
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine("Товара нет в наличии");
-                    }
                 }
-                else
+                Console.WriteLine("Статистика по частоте встречаемости каждой буквы:");
+                foreach (var pair in letterCount)
                 {
-                    Console.WriteLine("Товар с таким кодом не найден");
+                    Console.WriteLine($"{pair.Key}: {pair.Value}");
                 }
             }
 
-            void SellProduct()
+            //Возможность продолжить работу с новым текстом
+            void ContinueWithNewText()
             {
-                Console.WriteLine("Введите код товара,который хотите продать:");
-                int code = Convert.ToInt32(Console.ReadLine());
-                Product product = products.Find(p => p.code == code);
-                if (product != null)
+                Console.WriteLine("Хотите ввести новый текст? (да/нет)");
+                string answer = Console.ReadLine().ToLower();
+                if (answer == "да")
                 {
-                    if (product.InStock)
-                    {
-                        Console.WriteLine("Введите количество товара,которое хотите продать:");
-                        int quantity = Convert.ToInt32(Console.ReadLine());
-                        if (quantity <= product.Quantity)
-                        {
-                            product.Quantity -= quantity;
-                            if (product.Quantity == 0)
-                            {
-                                product.InStock = false;
-                            }
-                            Console.WriteLine("Товар продан");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Недостаточно товара на складе");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Товара нет в наличии");
-                    }
+                    Main(null);
                 }
                 else
                 {
-                    Console.WriteLine("Товар с таким кодом не найден");
-                }
-            }
-            void SearchProduct()
-            {
-                Console.WriteLine("Как вы хотите искать товар? (1.по коду, 2.по названию или 3.по категории)");
-                string searchType = Console.ReadLine();
-                Product product = null;
-                switch (searchType)
-                {
-                    case "1":
-                        Console.WriteLine("Введите код товара,который хотите найти:");
-                        int code = Convert.ToInt32(Console.ReadLine());
-                        product = products.Find(p => p.code == code);
-                        break;
-                    case "2":
-                        Console.WriteLine("Введите название товара,который хотите найти:");
-                        string name = Console.ReadLine();
-                        product = products.Find(p => p.Name == name);
-                        break;
-                    case "3":
-                        Console.WriteLine("Введите категорию товара,который хотите найти:");
-                        string category = Console.ReadLine();
-                        product = products.Find(p => p.Category == category);
-                        break;
-                    default:
-                        Console.WriteLine("Неизвестный тип поиска");
-                        break;
-                }
-                if (product != null)
-                {
-                    Console.WriteLine("Код: " + product.code);
-                    Console.WriteLine("Название: " + product.Name);
-                    Console.WriteLine("Цена: " + product.Price);
-                    Console.WriteLine("Количество: " + product.Quantity);
-                    Console.WriteLine("В наличии: " + product.InStock);
-                    Console.WriteLine("Категория: " + product.Category);
-                }
-                else
-                {
-                    Console.WriteLine("Товар с таким кодом не найден");
+                    Console.WriteLine("Программа завершена.");
                 }
             }
 
-            while (true)
+            //Сохранение всей статистики в список
+
+            //Возможность вывести статистику по прошлым текстам
+            void ShowStatistics(List<string> statistics)
             {
-                Console.WriteLine("Введите команду (1.Добавить, 2.Удалить, 3.Заказать, 4.Продать, 5.Найти, 6.Выход):");
-                string command = Console.ReadLine();
-                switch (command)
+                Console.WriteLine("Статистика по прошлым текстам:");
+                foreach (string stat in statistics)
                 {
-                    case "1":
-                        AddProduct();
-                        break;
-                    case "2":
-                        DeleteProduct();
-                        break;
-                    case "3":
-                        OrderProduct();
-                        break;
-                    case "4":
-                        SellProduct();
-                        break;
-                    case "5":
-                        SearchProduct();
-                        break;
-                    case "6":
-                        return;
-                    default:
-                        Console.WriteLine("Неизвестная команда");
-                        break;
+                    Console.WriteLine(stat);
                 }
             }
+           while (true)
+            {
+                CountWords(words);
+                FindShortestWord(words);
+                CountSentences(string.Join(" ", words));
+                CountVowelsAndConsonants(string.Join(" ", words));
+                FindLongestWord(words);
+                LetterFrequency(string.Join(" ", words));
+                ContinueWithNewText();
+            }
+            //Обязательно выполняйте задание без использования LINQ.
         }   
     }
 }
