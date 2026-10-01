@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +9,8 @@ namespace ISIP324_Kovalenko
 {
     internal class Program
     {
+       
+
         static void Main(string[] args)
         {
 //            Необходимо написать программу, которая будет принимать текст от пользователя и делать над ним определённые действия.
@@ -22,7 +25,7 @@ namespace ISIP324_Kovalenko
                 Console.WriteLine("Текст слишком короткий. Пожалуйста, введите текст снова");
                 inputText = Console.ReadLine();
             }
-            string[] words = inputText.Split(new char[] { ' ', '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] words = inputText.Split(new char[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
             //Подсчёт количества слов в тексте
             void CountWords(string[] wwords)
@@ -133,17 +136,87 @@ namespace ISIP324_Kovalenko
             }
 
             //Сохранение всей статистики в список
-            List<string> statistics = new List<string>();
+            List<string> historystatistics = new List<string>();
+            
 
-            //Возможность вывести статистику по прошлым текстам
+            string GenerateReport(string text, string[] wordsss, List<string> history)
+            {
+                int wordCount = words.Length;
+                int sentenceCount = 0;
+                int vowelsCount = 0;
+                int consonantsCount = 0;
+                string shortestWord = words[0];
+                string longestWord = words[0];
+                Dictionary<char, int> frequency = new Dictionary<char, int>();
+                foreach (char c in text)
+                {
+                    if (c == '.' || c == '!' || c == '?')
+                    {
+                        sentenceCount++;
+                    }
+                    if ("аеёиоуыэюя".Contains(c))
+                    {
+                        vowelsCount++;
+                    }
+                    else if (char.IsLetter(c))
+                    {
+                        consonantsCount++;
+                    }
+                }
+                foreach (string word in words)
+                {
+                    if (word.Length < shortestWord.Length)
+                    {
+                        shortestWord = word;
+                    }
+                    if (word.Length > longestWord.Length)
+                    {
+                        longestWord = word;
+                    }
+                }
+                foreach (char c in text.ToLower())
+                {
+                    if (char.IsLetter(c))
+                    {
+                        if (frequency.ContainsKey(c))
+                        {
+                            frequency[c]++;
+                        }
+                        else
+                        {
+                            frequency[c] = 1;
+                        }
+                    }
+                }
+                string report = $"Статистика по тексту:\n" +
+                                $"Количество слов: {wordCount}\n" +
+                                $"Количество предложений: {sentenceCount}\n" +
+                                $"Количество гласных букв: {vowelsCount}\n" +
+                                $"Количество согласных букв: {consonantsCount}\n" +
+                                $"Самое короткое слово: {shortestWord}\n" +
+                                $"Самое длинное слово: {longestWord}\n";
+                                
+                history.Add(report);
+                return report;
+
+            }
             void ShowStatistics()
             {
-                Console.WriteLine("Статистика по прошлым текстам:");
-                foreach (string stat in statistics)
+                if (historystatistics.Count == 0)
                 {
-                    Console.WriteLine(stat);
+                    Console.WriteLine("Статистика по прошлым текстам отсутствует.");
+                }
+                else
+                {
+                    Console.WriteLine("Статистика по прошлым текстам:");
+                    foreach (string report in historystatistics)
+                    {
+                        Console.WriteLine(report);
+                    }
                 }
             }
+
+            //Возможность вывести статистику по прошлым текстам
             while (true)
             {   Console.WriteLine("1. Подсчёт количества слов в тексте");
                 Console.WriteLine("2. Поиск самого короткого слова");
@@ -151,9 +224,10 @@ namespace ISIP324_Kovalenko
                 Console.WriteLine("4. Подсчёт количества гласных и согласных букв");
                 Console.WriteLine("5. Поиск самого длинного слова");
                 Console.WriteLine("6. Создание статистики по частоте встречаемости каждой буквы");
-                Console.WriteLine("7. Вывести статистику по прошлым текстам");
-                Console.WriteLine("8. Ввести новый текст");
-                Console.WriteLine("9. Выход из программы");
+                Console.WriteLine("7. Сохранить отчёт");
+                Console.WriteLine("8. Ввывести статистику по прошлым текстам");
+                Console.WriteLine("9. Ввести новый текст");
+                Console.WriteLine("10. Выход из программы");
                 string choice = Console.ReadLine();
                 switch (choice)
                 {
@@ -164,24 +238,27 @@ namespace ISIP324_Kovalenko
                         FindShortestWord(words);
                         break;
                     case "3":
-                        CountSentences(string.Join(" ", words));
+                        CountSentences(inputText);
                         break;
                     case "4":
-                        CountVowelsAndConsonants(string.Join(" ", words));
+                        CountVowelsAndConsonants(inputText);
                         break;
                     case "5":
                         FindLongestWord(words);
                         break;
                     case "6":
-                        LetterFrequency(string.Join(" ", words));
+                        LetterFrequency(inputText);
                         break;
                     case "7":
-                        ShowStatistics();
+                        GenerateReport(inputText,words, historystatistics);
                         break;
                     case "8":
+                        ShowStatistics();
+                        break;
+                    case "9":
                         ContinueWithNewText();
                         return;
-                    case "9":
+                    case "10":
                         Console.WriteLine("Программа завершена.");
                         return;
                     default:
