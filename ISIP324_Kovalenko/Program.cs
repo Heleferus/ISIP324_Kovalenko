@@ -57,6 +57,7 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Название книги не может быть пустым.");
                     return;
                 }
+                Console.WriteLine();
                 Console.WriteLine("Введите автора книги:");
                 string author = Console.ReadLine();
                 if (author == null || author.Trim() == "")
@@ -64,6 +65,7 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Автор книги не может быть пустым.");
                     return;
                 }
+                Console.WriteLine();
                 Console.WriteLine("Выберите жанр книги (0 - Fiction, 1 - NonFiction, 2 - ScienceFiction, 3 - Fantasy, 4 - Mystery):");
                 if (!Enum.TryParse(Console.ReadLine(), out Genre genre) || !Enum.IsDefined(typeof(Genre), genre))
                 {
@@ -76,14 +78,17 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Год издания должен быть положительным числом.");
                     return;
                 }
+                Console.WriteLine();
                 Console.WriteLine("Введите цену книги:");
                 if (!decimal.TryParse(Console.ReadLine(), out decimal price) || price < 0)
                 {
                     Console.WriteLine("Цена книги не может быть отрицательной.");
                     return;
                 }
+                Console.WriteLine();
                 books.Add(new Book(title, author, genre, year, price));
                 Console.WriteLine("Книга  добавлена");
+                Console.WriteLine();
             }
             
             void Delete()
@@ -94,15 +99,18 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Неверный идентификатор.");
                     return;
                 }
+                Console.WriteLine();
                 var bookToRemove = books.FirstOrDefault(b => b.Id == id);
                 if (bookToRemove != null)
                 {
                     books.Remove(bookToRemove);
                     Console.WriteLine("Книга удалена.");
+                    Console.WriteLine();
                 }
                 else
                 {
                     Console.WriteLine("Книга с таким идентификатором не найдена.");
+                    Console.WriteLine();
                 }
             }
 
@@ -116,12 +124,15 @@ namespace ISIP324_Kovalenko
                     foreach (var book in results)
                     {
                         Console.WriteLine($"ID: {book.Id}, Название: {book.Title}, Автор: {book.Author}, Жанр: {book.Genre}, Год: {book.Year}, Цена: {book.Price}");
+                        Console.WriteLine();
                     }
                 }
                 else
                 {
                     Console.WriteLine("Книги не найдены.");
+                    Console.WriteLine();
                 }
+                Console.WriteLine();
             }
 
             void Sort()
@@ -132,6 +143,8 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Неверный параметр.");
                     return;
                 }
+                Console.WriteLine();
+                Console.WriteLine();
                 List<Book> sortedBooks;
                 if (sortOption == 0)
                 {
@@ -150,6 +163,7 @@ namespace ISIP324_Kovalenko
                 {
                     Console.WriteLine($"ID: {book.Id}, Название: {book.Title}, Автор: {book.Author}, Жанр: {book.Genre}, Год: {book.Year}, Цена: {book.Price}");
                 }
+                Console.WriteLine();
 
             }
 
@@ -160,11 +174,14 @@ namespace ISIP324_Kovalenko
                 if (mostExpensiveBook != null)
                 {
                     Console.WriteLine($"Самая дорогая книга: ID: {mostExpensiveBook.Id}, Название: {mostExpensiveBook.Title}, Автор: {mostExpensiveBook.Author}, Жанр: {mostExpensiveBook.Genre}, Год: {mostExpensiveBook.Year}, Цена: {mostExpensiveBook.Price}");
+                    Console.WriteLine();
                 }
                 if (leastExpensiveBook != null)
                 {
                     Console.WriteLine($"Самая дешевая книга: ID: {leastExpensiveBook.Id}, Название: {leastExpensiveBook.Title}, Автор: {leastExpensiveBook.Author}, Жанр: {leastExpensiveBook.Genre}, Год: {leastExpensiveBook.Year}, Цена: {leastExpensiveBook.Price}");
+                    Console.WriteLine();
                 }
+                Console.WriteLine();
             }
 
             void GroupByAuthor()
@@ -173,11 +190,14 @@ namespace ISIP324_Kovalenko
                 foreach (var group in groupedBooks)
                 {
                     Console.WriteLine($"Автор: {group.Author}, Количество книг: {group.Count}");
+                    Console.WriteLine();
                 }
+                Console.WriteLine();
             }
 
             while (true)
             {
+                Console.WriteLine();
                 Console.WriteLine("Выберите команду: 1 - Добавить книгу, 2 - Удалить книгу, 3 - Найти книги, 4 - Сортировать книги, 5 - Вывести самую дорогую и самую дешевую книгу, 6 - Сгруппировать книги по авторам, 0 - Выход");
                 string command = Console.ReadLine();
                 switch (command)
@@ -204,6 +224,7 @@ namespace ISIP324_Kovalenko
                         return;
                     default:
                         Console.WriteLine("Неверная команда.");
+                        Console.WriteLine();
                         break;
                 }
             }
