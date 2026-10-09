@@ -30,6 +30,11 @@ namespace ISIP324_Kovalenko
                 Console.WriteLine($"ID: {id}, Имя: {name} {surname}, Возраст: {age}, Контактная информация: {contactInfo}");
             }
 
+            public int GetId()
+            {
+                return id;
+            }
+
         }
         class Course
         {
@@ -72,6 +77,23 @@ namespace ISIP324_Kovalenko
                 this.recordBookNumber = recordBookNumber;
                 this.enrolledCourses = new List<Course>();
             }
+
+            public void EnrollInCourse(Course course)
+            {
+                enrolledCourses.Add(course);
+                course.AddStudent(this);
+            }
+
+            public override void DisplayInfo()
+            {
+                base.DisplayInfo();
+                Console.WriteLine($"Номер зачетной книжки: {recordBookNumber}");
+                Console.WriteLine("Записанные курсы:");
+                foreach (var course in enrolledCourses)
+                {
+                    Console.WriteLine($"- {course.courseName}");
+                }
+            }
         }
         
     
@@ -85,6 +107,23 @@ namespace ISIP324_Kovalenko
                 this.department = department;
                 this.qualification = qualification;
                 this.coursesTaught = new List<Course>();
+            }
+
+            public void AssignCourse(Course course)
+            {
+                coursesTaught.Add(course);
+            }
+            
+            public override void DisplayInfo()
+            {
+                base.DisplayInfo();
+                Console.WriteLine($"Кафедра: {department}");
+                Console.WriteLine($"Квалификация: {qualification}");
+                Console.WriteLine("Ведомые курсы:");
+                foreach (var course in coursesTaught)
+                {
+                    Console.WriteLine($"- {course.courseName}");
+                }
             }
         }
         static void Main(string[] args)
