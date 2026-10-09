@@ -25,12 +25,12 @@ namespace ISIP324_Kovalenko
                 this.id = nextId++;
             }
 
-            public void DisplayInfo()
+            public virtual void DisplayInfo()
             {
                 Console.WriteLine($"ID: {id}, Имя: {name} {surname}, Возраст: {age}, Контактная информация: {contactInfo}");
             }
 
-            public int GetId()
+            public virtual int GetId()
             {
                 return id;
             }
@@ -56,6 +56,10 @@ namespace ISIP324_Kovalenko
                 enrolledStudents.Add(student);
             }
 
+            public int GetId()
+            {
+                return courseId;
+            }
             public void DisplayCourseInfo()
             {
                 Console.WriteLine($"ID курса: {courseId}, Название курса: {courseName}, Преподаватель: {teacher.name} {teacher.surname}");
@@ -70,11 +74,14 @@ namespace ISIP324_Kovalenko
         class Student : Person
         {
             public int recordBookNumber;
+            public int studentId;
+            private static int nextStudentId = 0;
             public List<Course> enrolledCourses;
 
             public Student(string name, string surname, int age, string contactInfo, int recordBookNumber) : base(name, surname, age, contactInfo)
             {
                 this.recordBookNumber = recordBookNumber;
+                this.studentId = nextStudentId++;
                 this.enrolledCourses = new List<Course>();
             }
 
@@ -83,7 +90,10 @@ namespace ISIP324_Kovalenko
                 enrolledCourses.Add(course);
                 course.AddStudent(this);
             }
-
+            public override int GetId()
+            {
+                return studentId;
+            }
             public override void DisplayInfo()
             {
                 base.DisplayInfo();
@@ -101,11 +111,14 @@ namespace ISIP324_Kovalenko
         {
             public string department;
             public string qualification;
+            public int teacherId;
+            private static int nextTeacherId = 0;
             public List<Course> coursesTaught;
             public Teacher(string name, string surname, int age, string contactInfo, string department, string qualification) : base(name, surname, age, contactInfo)
             {
                 this.department = department;
                 this.qualification = qualification;
+                this.teacherId = nextTeacherId++;
                 this.coursesTaught = new List<Course>();
             }
 
@@ -113,7 +126,11 @@ namespace ISIP324_Kovalenko
             {
                 coursesTaught.Add(course);
             }
-            
+            public override int GetId()
+            {
+                return teacherId;
+            }
+
             public override void DisplayInfo()
             {
                 base.DisplayInfo();
@@ -327,7 +344,22 @@ namespace ISIP324_Kovalenko
                     student.DisplayInfo();
                 }
             }
-            
+            void ViewAllTeachers()
+            {
+                Console.WriteLine("Полный список преподавателей:");
+                foreach (var teacher in teachers)
+                {
+                    teacher.DisplayInfo();
+                }
+            }
+            void ViewAllCourses()
+            {
+                Console.WriteLine("Полный список курсов:");
+                foreach (var course in courses)
+                {
+                    course.DisplayCourseInfo();
+                }
+            }
             //            Для выполнения задания используйте все возможности языка C#, изученные ранее (классы, списки, перечисления, LINQ и так далее).Обязательно сделайте проверку всевозможных вводимых значений (не должно быть возможности создать пустой товар, с отрицательной ценой, с отрицательным количеством и тому подобное).Программа не должна вылетать в процессе работы.Программа должна выводить информацию в чётком и ясном виде для пользователя.Не забудьте отправлять код по частям, разными коммитами, и делать осмысленные комментарии к коммитам.
 
             //Вам необходимо создать систему управления университетом. Система должна позволять управлять информацией о студентах, преподавателях и курсах через консоль.
@@ -364,22 +396,73 @@ namespace ISIP324_Kovalenko
 
             //Разные типы людей в университете могут иметь разное представление своей информации.Реализуйте возможность работы с объектами через базовый класс.
 
+            while (true) { 
+                Console.WriteLine("Выберите действие:");
+                Console.WriteLine("1. Добавить студента");
+                Console.WriteLine("2. Просмотреть информацию о студенте");
+                Console.WriteLine("3. Записать студента на курс");
+                Console.WriteLine("4. Просмотреть список курсов студента");
+                Console.WriteLine("5. Добавить преподавателя");
+                Console.WriteLine("6. Просмотреть информацию о преподавателе");
+                Console.WriteLine("7. Назначить преподавателя на курс");
+                Console.WriteLine("8. Создать новый курс");
+                Console.WriteLine("9. Просмотреть информацию о курсе");
+                Console.WriteLine("10. Вывести список студентов курса");
+                Console.WriteLine("11. Вывести полный список студентов");
+                Console.WriteLine("12. Вывести полный список преподавателей");
+                Console.WriteLine("13. Вывести полный список курсов");
+                Console.WriteLine("0. Выход");
+                string input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        AddStudent();
+                        break;
+                    case "2":
+                        ViewStudentInfo();
+                        break;
+                    case "3":
+                        EnrollStudentInCourse();
+                        break;
+                    case "4":
+                        ViewStudentCourses();
+                        break;
+                    case "5":
+                        AddTeacher();
+                        break;
+                    case "6":
+                        ViewTeacherInfo();
+                        break;
+                    case "7":
+                        AssignTeacherToCourse();
+                        break;
+                    case "8":
+                        AddCourse();
+                        break;
+                    case "9":
+                        ViewCourseInfo();
+                        break;
+                    case "10":
+                        ViewCourseStudents();
+                        break;
+                    case "11":
+                        ViewAllStudents();
+                        break;
+                    case "12":
+                        ViewAllTeachers();
+                        break;
+                    case "13":
+                        ViewAllCourses();
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Неверный выбор. Попробуйте снова.");
+                        break;
+                }
 
-            Console.WriteLine("Управление университетом:");
-            Console.WriteLine("1. Добавить студента");
-            Console.WriteLine("2. Просмотреть информацию о студенте");
-            Console.WriteLine("3. Записать студента на курс");
-            Console.WriteLine("4. Просмотреть список курсов студента");
-            Console.WriteLine("5. Добавить преподавателя");
-            Console.WriteLine("6. Просмотреть информацию о преподавателе");
-            Console.WriteLine("7. Назначить преподавателя на курс");
-            Console.WriteLine("8. Создать новый курс");
-            Console.WriteLine("9. Просмотреть информацию о курсе");
-            Console.WriteLine("10. Вывести список студентов курса");
-            Console.WriteLine("11. Вывести полный список студентов");
-            Console.WriteLine("12. Вывести полный список преподавателей");
-            Console.WriteLine("13. Вывести полный список курсов");
-            Console.WriteLine("0. Выход");
+            }
+            
         }
     }
 }
