@@ -207,6 +207,40 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Студент с таким ID не найден.");
                 }
             }
+
+            void AddTeacher()
+            {
+                Console.WriteLine("Введите имя преподавателя:");
+                string name = Console.ReadLine();
+                Console.WriteLine("Введите фамилию преподавателя:");
+                string surname = Console.ReadLine();
+                Console.WriteLine("Введите возраст преподавателя:");
+                int age = int.Parse(Console.ReadLine());
+                Console.WriteLine("Введите контактную информацию преподавателя:");
+                string contactInfo = Console.ReadLine();
+                Console.WriteLine("Введите кафедру преподавателя:");
+                string department = Console.ReadLine();
+                Console.WriteLine("Введите квалификацию преподавателя:");
+                string qualification = Console.ReadLine();
+                Teacher newTeacher = new Teacher(name, surname, age, contactInfo, department, qualification);
+                teachers.Add(newTeacher);
+                Console.WriteLine("Преподаватель успешно добавлен.");
+            }
+
+            void ViewTeacherInfo()
+            {
+                Console.WriteLine("Введите ID преподавателя для просмотра информации:");
+                int id = int.Parse(Console.ReadLine());
+                Teacher teacher = teachers.FirstOrDefault(t => t.GetId() == id);
+                if (teacher != null)
+                {
+                    teacher.DisplayInfo();
+                }
+                else
+                {
+                    Console.WriteLine("Преподаватель с таким ID не найден.");
+                }
+            }
             //            Для выполнения задания используйте все возможности языка C#, изученные ранее (классы, списки, перечисления, LINQ и так далее).Обязательно сделайте проверку всевозможных вводимых значений (не должно быть возможности создать пустой товар, с отрицательной ценой, с отрицательным количеством и тому подобное).Программа не должна вылетать в процессе работы.Программа должна выводить информацию в чётком и ясном виде для пользователя.Не забудьте отправлять код по частям, разными коммитами, и делать осмысленные комментарии к коммитам.
 
             //Вам необходимо создать систему управления университетом. Система должна позволять управлять информацией о студентах, преподавателях и курсах через консоль.
