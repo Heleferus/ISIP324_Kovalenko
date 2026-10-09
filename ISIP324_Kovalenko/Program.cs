@@ -8,8 +8,37 @@ namespace ISIP324_Kovalenko
 {
     internal class Program
     {
-        class Person { }
-        class Student : Person { }
+        class Person
+        {
+            public string name;
+            public int age;
+            private int id;
+            public string contactInfo;
+            private static int nextId = 1;
+            public string surname;
+            public Person(string name, string surname, int age, string contactInfo)
+            {
+                this.name = name;
+                this.surname = surname;
+                this.age = age;
+                this.contactInfo = contactInfo;
+                this.id = nextId++;
+            }
+
+            public void DisplayInfo()
+            {
+                Console.WriteLine($"ID: {id}, Имя: {name} {surname}, Возраст: {age}, Контактная информация: {contactInfo}");
+            }
+
+        }
+        class Course { }
+        class Student : Person
+        {
+
+        }
+        
+        
+        
         class Teacher : Person { }
         static void Main(string[] args)
         {
