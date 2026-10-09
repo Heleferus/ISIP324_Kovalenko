@@ -138,27 +138,61 @@ namespace ISIP324_Kovalenko
             }
         }
 
-        class Programm
-        {
+        
             static void Main(string[] args)
             {
-                List<Student> students = new List<Student>();
-                List<Course> courses = new List<Course>();
-                List<Teacher> teachers = new List<Teacher>();
+                List<Student> students = new List<Student>
+                {
+                    new Student("Гриша", "Ковальчук", 20, "ger@mail.ru", 12345),
+                    new Student("Саша", "Петров", 21, "sasha@mail.ru", 12346),
+                    new Student("Маша", "Иванова", 22, "masha@mail.ru", 12347)
+                };
+
+                List<Teacher> teachers = new List<Teacher>
+                {
+                    new Teacher ("Иван", "Сидоров", 35, "ivan@mail.ru", "Кафедра математики", "Кандидат наук"),
+                    new Teacher ("Петр", "Алексеев", 40, "petr@mail.ru", "Кафедра физики", "Доктор наук"),
+                    new Teacher ("Мария", "Кузнецова", 30, "masha@mail.ru", "Кафедра химии", "Кандидат наук")
+                };
+
+                List<Course> courses = new List<Course>
+                {
+                    new Course("Математика", teachers[0]),
+                    new Course("Физика", teachers[1]),
+                    new Course("Химия", teachers[2])
+                };
+                
 
                 void AddStudent()
                 {
                     Console.WriteLine("Введите имя студента:");
                     string name = Console.ReadLine();
+                    if (name == null || name.Trim() == "")
+                    {
+                    Console.WriteLine("Имя не может быть пустым. Попробуйте снова.");
+                    }
                     Console.WriteLine("Введите фамилию студента:");
                     string surname = Console.ReadLine();
+                    if (surname == null || surname.Trim() == "")
+                    {
+                    Console.WriteLine("Фамилия не может быть пустой. Попробуйте снова.");
+                    }
                     Console.WriteLine("Введите возраст студента:");
-                    int age = int.Parse(Console.ReadLine());
+                    int age = int.TryParse(Console.ReadLine(), out age) ? age : 0;
+                    if (age < 0)
+                    {
+                    Console.WriteLine("Возраст не может быть отрицательным. Попробуйте снова.");
+                    return;
+                    }
                     Console.WriteLine("Введите контактную информацию студента:");
                     string contactInfo = Console.ReadLine();
+                    if (contactInfo == null || contactInfo.Trim() == "")
+                    {
+                    Console.WriteLine("Контактная информация не может быть пустой. Попробуйте снова.");
+                    return;
+                    }
                     Console.WriteLine("Введите номер зачетной книжки студента:");
-                    int recordBookNumber = int.Parse(Console.ReadLine());
-
+                    int recordBookNumber = int.TryParse(Console.ReadLine(), out recordBookNumber) ? recordBookNumber : 0;
                     Student newStudent = new Student(name, surname, age, contactInfo, recordBookNumber);
                     students.Add(newStudent);
                     Console.WriteLine($"Студент успешно добавлен. Его ID: {newStudent.GetId()}");
@@ -167,7 +201,7 @@ namespace ISIP324_Kovalenko
                 void ViewStudentInfo()
                 {
                     Console.WriteLine("Введите ID студента для просмотра информации:");
-                    int id = int.Parse(Console.ReadLine());
+                    int id = int.TryParse(Console.ReadLine(), out id) ? id : 0;
                     Student student = students.FirstOrDefault(s => s.GetId() == id);
                     if (student != null)
                     {
@@ -182,12 +216,12 @@ namespace ISIP324_Kovalenko
                 void EnrollStudentInCourse()
                 {
                     Console.WriteLine("Введите ID студента для записи на курс:");
-                    int studentId = int.Parse(Console.ReadLine());
+                    int studentId = int.TryParse(Console.ReadLine(), out studentId) ? studentId : 0;
                     Student student = students.FirstOrDefault(s => s.GetId() == studentId);
                     if (student != null)
                     {
                         Console.WriteLine("Введите ID курса для записи студента:");
-                        int courseId = int.Parse(Console.ReadLine());
+                        int courseId = int.TryParse(Console.ReadLine(), out courseId) ? courseId : 0;
                         Course course = courses.FirstOrDefault(c => c.GetId() == courseId); 
                         if (course != null)
                         {
@@ -208,7 +242,7 @@ namespace ISIP324_Kovalenko
                 void ViewStudentCourses()
                 {
                     Console.WriteLine("Введите ID студента для просмотра списка курсов:");
-                    int studentId = int.Parse(Console.ReadLine());
+                    int studentId = int.TryParse(Console.ReadLine(), out studentId) ? studentId : 0;
                     Student student = students.FirstOrDefault(s => s.GetId() == studentId);
                     if (student != null)
                     {
@@ -228,17 +262,37 @@ namespace ISIP324_Kovalenko
                 {
                     Console.WriteLine("Введите имя преподавателя:");
                     string name = Console.ReadLine();
+                    if (name == null || name.Trim() == "")
+                    {
+                    Console.WriteLine("Имя не может быть пустым. Попробуйте снова.");
+                    return;
+                    }
                     Console.WriteLine("Введите фамилию преподавателя:");
                     string surname = Console.ReadLine();
                     Console.WriteLine("Введите возраст преподавателя:");
-                    int age = int.Parse(Console.ReadLine());
+                    int age = int.TryParse(Console.ReadLine(), out age) ? age : 0;
                     Console.WriteLine("Введите контактную информацию преподавателя:");
                     string contactInfo = Console.ReadLine();
+                    if (contactInfo == null || contactInfo.Trim() == "")
+                    {
+                        Console.WriteLine("Контактная информация не может быть пустой. Попробуйте снова.");
+                        return;
+                    }
                     Console.WriteLine("Введите кафедру преподавателя:");
                     string department = Console.ReadLine();
+                    if (department == null || department.Trim() == "")
+                    {
+                    Console.WriteLine("Кафедра не может быть пустой. Попробуйте снова.");
+                    return;
+                    }
                     Console.WriteLine("Введите квалификацию преподавателя:");
                     string qualification = Console.ReadLine();
-
+                    if (qualification == null || qualification.Trim() == "")
+                    {
+                    Console.WriteLine("Квалификация не может быть пустой. Попробуйте снова.");
+                    return;
+                    }
+              
                     Teacher newTeacher = new Teacher(name, surname, age, contactInfo, department, qualification);
                     teachers.Add(newTeacher);
                     Console.WriteLine($"Преподаватель успешно добавлен. Его ID: {newTeacher.GetId()}");
@@ -247,7 +301,7 @@ namespace ISIP324_Kovalenko
                 void ViewTeacherInfo()
                 {
                     Console.WriteLine("Введите ID преподавателя для просмотра информации:");
-                    int id = int.Parse(Console.ReadLine());
+                    int id = int.TryParse(Console.ReadLine(), out id) ? id : 0;
                     Teacher teacher = teachers.FirstOrDefault(t => t.GetId() == id);
                     if (teacher != null)
                     {
@@ -262,12 +316,12 @@ namespace ISIP324_Kovalenko
                 void AssignTeacherToCourse()
                 {
                     Console.WriteLine("Введите ID преподавателя для назначения на курс:");
-                    int teacherId = int.Parse(Console.ReadLine());
+                    int teacherId = int.TryParse(Console.ReadLine(), out teacherId) ? teacherId : 0;
                     Teacher teacher = teachers.FirstOrDefault(t => t.GetId() == teacherId);
                     if (teacher != null)
                     {
                         Console.WriteLine("Введите ID курса для назначения преподавателя:");
-                        int courseId = int.Parse(Console.ReadLine());
+                        int courseId = int.TryParse(Console.ReadLine(), out courseId) ? courseId : 0;
                         Course course = courses.FirstOrDefault(c => c.GetId() == courseId); 
                         if (course != null)
                         {
@@ -290,8 +344,13 @@ namespace ISIP324_Kovalenko
                 {
                     Console.WriteLine("Введите название курса:");
                     string courseName = Console.ReadLine();
+                    if (courseName == null || courseName.Trim() == "")
+                    {
+                    Console.WriteLine("Название курса не может быть пустым. Попробуйте снова.");
+                    return;
+                    }
                     Console.WriteLine("Введите ID преподавателя для назначения на курс:");
-                    int teacherId = int.Parse(Console.ReadLine());
+                    int teacherId = int.TryParse(Console.ReadLine(), out teacherId) ? teacherId : 0;
                     Teacher teacher = teachers.FirstOrDefault(t => t.GetId() == teacherId);
                     if (teacher != null)
                     {
@@ -309,7 +368,7 @@ namespace ISIP324_Kovalenko
                 void ViewCourseInfo()
                 {
                     Console.WriteLine("Введите ID курса для просмотра информации:");
-                    int courseId = int.Parse(Console.ReadLine());
+                    int courseId = int.TryParse(Console.ReadLine(), out courseId) ? courseId : 0;
                     Course course = courses.FirstOrDefault(c => c.GetId() == courseId);
                     if (course != null)
                     {
@@ -324,8 +383,8 @@ namespace ISIP324_Kovalenko
                 void ViewCourseStudents()
                 {
                     Console.WriteLine("Введите ID курса для просмотра списка студентов:");
-                    int courseId = int.Parse(Console.ReadLine());
-                    Course course = courses.FirstOrDefault(c => c.GetId() == courseId); 
+                    int courseId = int.TryParse(Console.ReadLine(), out courseId) ? courseId : 0;
+                    Course course = courses.FirstOrDefault(c => c.GetId() == courseId);
                     if (course != null)
                     {
                         Console.WriteLine($"Список студентов курса {course.courseName}:");
@@ -408,6 +467,5 @@ namespace ISIP324_Kovalenko
                     }
                 }
             }
-        }
     }
 }
