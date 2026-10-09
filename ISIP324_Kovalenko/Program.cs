@@ -14,7 +14,7 @@ namespace ISIP324_Kovalenko
             public int age;
             private int id;
             public string contactInfo;
-            private static int nextId = 1;
+            private static int nextId = 0;
             public string surname;
             public Person(string name, string surname, int age, string contactInfo)
             {
@@ -31,15 +31,62 @@ namespace ISIP324_Kovalenko
             }
 
         }
-        class Course { }
-        class Student : Person
+        class Course
         {
+            public string courseName;
+            public int courseId;
+            private static int nextCourseId = 0;
+            public Teacher teacher;
+            public List<Student> enrolledStudents;
+            public Course(string courseName, Teacher teacher)
+            {
+                this.courseName = courseName;
+                this.courseId = nextCourseId++;
+                this.teacher = teacher;
+                this.enrolledStudents = new List<Student>();
+            }
+
+            public void AddStudent(Student student)
+            {
+                enrolledStudents.Add(student);
+            }
+
+            public void DisplayCourseInfo()
+            {
+                Console.WriteLine($"ID курса: {courseId}, Название курса: {courseName}, Преподаватель: {teacher.name} {teacher.surname}");
+                Console.WriteLine("Записанные студенты:");
+                foreach (var student in enrolledStudents)
+                {
+                    Console.WriteLine($"- {student.name} {student.surname}");
+                }
+            }
 
         }
+        class Student : Person
+        {
+            public int recordBookNumber;
+            public List<Course> enrolledCourses;
+
+            public Student(string name, string surname, int age, string contactInfo, int recordBookNumber) : base(name, surname, age, contactInfo)
+            {
+                this.recordBookNumber = recordBookNumber;
+                this.enrolledCourses = new List<Course>();
+            }
+        }
         
-        
-        
-        class Teacher : Person { }
+    
+        class Teacher : Person
+        {
+            public string department;
+            public string qualification;
+            public List<Course> coursesTaught;
+            public Teacher(string name, string surname, int age, string contactInfo, string department, string qualification) : base(name, surname, age, contactInfo)
+            {
+                this.department = department;
+                this.qualification = qualification;
+                this.coursesTaught = new List<Course>();
+            }
+        }
         static void Main(string[] args)
         {
 //            Для выполнения задания используйте все возможности языка C#, изученные ранее (классы, списки, перечисления, LINQ и так далее).Обязательно сделайте проверку всевозможных вводимых значений (не должно быть возможности создать пустой товар, с отрицательной ценой, с отрицательным количеством и тому подобное).Программа не должна вылетать в процессе работы.Программа должна выводить информацию в чётком и ясном виде для пользователя.Не забудьте отправлять код по частям, разными коммитами, и делать осмысленные комментарии к коммитам.
