@@ -241,6 +241,52 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Преподаватель с таким ID не найден.");
                 }
             }
+
+            void AssignTeacherToCourse()
+            {
+                Console.WriteLine("Введите ID преподавателя для назначения на курс:");
+                int teacherId = int.Parse(Console.ReadLine());
+                Teacher teacher = teachers.FirstOrDefault(t => t.GetId() == teacherId);
+                if (teacher != null)
+                {
+                    Console.WriteLine("Введите ID курса для назначения преподавателя:");
+                    int courseId = int.Parse(Console.ReadLine());
+                    Course course = courses.FirstOrDefault(c => c.courseId == courseId);
+                    if (course != null)
+                    {
+                        course.teacher = teacher;
+                        teacher.AssignCourse(course);
+                        Console.WriteLine("Преподаватель успешно назначен на курс.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Курс с таким ID не найден.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Преподаватель с таким ID не найден.");
+                }
+            }
+            void AddCourse()
+            {
+                Console.WriteLine("Введите название курса:");
+                string courseName = Console.ReadLine();
+                Console.WriteLine("Введите ID преподавателя для назначения на курс:");
+                int teacherId = int.Parse(Console.ReadLine());
+                Teacher teacher = teachers.FirstOrDefault(t => t.GetId() == teacherId);
+                if (teacher != null)
+                {
+                    Course newCourse = new Course(courseName, teacher);
+                    courses.Add(newCourse);
+                    teacher.AssignCourse(newCourse);
+                    Console.WriteLine("Курс успешно создан.");
+                }
+                else
+                {
+                    Console.WriteLine("Преподаватель с таким ID не найден.");
+                }
+            }
             //            Для выполнения задания используйте все возможности языка C#, изученные ранее (классы, списки, перечисления, LINQ и так далее).Обязательно сделайте проверку всевозможных вводимых значений (не должно быть возможности создать пустой товар, с отрицательной ценой, с отрицательным количеством и тому подобное).Программа не должна вылетать в процессе работы.Программа должна выводить информацию в чётком и ясном виде для пользователя.Не забудьте отправлять код по частям, разными коммитами, и делать осмысленные комментарии к коммитам.
 
             //Вам необходимо создать систему управления университетом. Система должна позволять управлять информацией о студентах, преподавателях и курсах через консоль.
