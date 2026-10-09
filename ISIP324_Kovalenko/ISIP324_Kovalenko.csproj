@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6534A322-A741-4F26-9B0A-1C01F11E1128}</ProjectGuid>
+    <ProjectGuid>{12600367-6935-C7D4-8F50-FAF7B0666813}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ISIP324_Kovalenko</RootNamespace>
     <AssemblyName>ISIP324_Kovalenko</AssemblyName>
