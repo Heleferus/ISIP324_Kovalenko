@@ -124,7 +124,7 @@ namespace ISIP324_Kovalenko
                 Console.WriteLine($"\nХод {turnCount}:");
                 if (turnCount % 10 == 0)
                 {
-                    Enemy boss = EnemyFabric.CreateEnemy();
+                    Enemy boss = EnemyFabric.CreateBoss();
                     Console.WriteLine($"Вы встретили босса: {boss.Name}!");
                     Battle(boss);
                 }
@@ -272,7 +272,7 @@ namespace ISIP324_Kovalenko
     {
         public static Enemy CreateEnemy()
         {
-            int enemyType = new Random().Next(0, 7);
+            int enemyType = RandomHelper.rand.Next(0, 3);
             switch (enemyType)
             {
                 case 0:
@@ -281,16 +281,26 @@ namespace ISIP324_Kovalenko
                     return new Skeleton();
                 case 2:
                     return new Mage();
-                case 3:
-                    return new Gorlanov();
-                case 4:
-                    return new Kovalskii();
-                case 5:
-                    return new Archmage();
-                case 6:
-                    return new Pestov();
                 default:
                     throw new Exception("Неверный тип врага");
+            }
+        }
+
+        public static Enemy CreateBoss()
+        {
+            int bossType = RandomHelper.rand.Next(0, 4);
+            switch (bossType)
+            {
+                case 0:
+                    return new Gorlanov();
+                case 1:
+                    return new Kovalskii();
+                case 2:
+                    return new Archmage();
+                case 3:
+                    return new Pestov();
+                default:
+                    throw new Exception("Неверный тип босса");
             }
         }
     }
@@ -409,7 +419,6 @@ namespace ISIP324_Kovalenko
             static void Main(string[] args)
             {
              Game.StartGame();
-
             }
     }
 }
