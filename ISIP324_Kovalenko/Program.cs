@@ -15,34 +15,52 @@ namespace ISIP324_Kovalenko
     {
         List<Weapon> weapons = new List<Weapon> 
         { 
-        
-        
-        
+           new Weapon(10, 0.1m, "Обычный меч"),
+           new Weapon(15, 0.15m, "РУСкий топор"),
+           new Weapon(20, 0.2m, "Палочка выручалочка"),
+           new Weapon(25, 0.25m, "Мороженое 48 копеек"),
+           new Weapon (30, 0.3m, "RTX 5090"),
+           new Weapon (35, 0.35m, "Святая мать"),
+           new Weapon (40, 0.4m, "Тьмослик"),
+           new Weapon (45, 0.45m, "Хомяк"),
+           new Weapon (50, 0.5m, "Пенсил"),
+           new Weapon (55, 0.55m, "Топор Рыкарей"),
+           new Weapon (100, 0.99m, "Пёся"),
+        };
+
+        List<Equipment> equipments = new List<Equipment>
+        {
+            new Equipment(5, "Обычная броня"),
+            new Equipment(10, "Коcоворотка"),
+            new Equipment(15, "Железная дева"),
+            new Equipment(20, "Стальные яйца"),
+            new Equipment(25, "Мифриловая броня"),
+            new Equipment(30, "Драконья броня"),
+            new Equipment(35, "Броня из Вальхейма"),
+            new Equipment(40, "Броня Гаврюшы"),
+            new Equipment(45, "Броня из пёси"),
+            new Equipment(-10, "БДСМ-Костюм"),
+            new Equipment(-100, "Фурсьют"),
         };
         public static Enemy GenerateEnemy()
         {
             return EnemyFabric.CreateEnemy();
         }
 
-        public static void GenerateChest()
+       public static void OpenChest()
         {
             Player player = Player.GetInstance();
             int itemType = RandomHelper.rand.Next(0, 3);
             switch (itemType)
             {
                 case 0:
-                    Console.WriteLine("Вы нашли лечебное зелье!");
                     player.Heal();
                     break;
                 case 1:
-                    Console.WriteLine("Вы нашли новое оружие!");
-                    Weapon newWeapon = new Weapon(RandomHelper.rand.Next(5, 21), (decimal)RandomHelper.rand.NextDouble() * 0.2m, "Меч " + RandomHelper.rand.Next(1, 100));
-                    player.EquipWeapon(newWeapon);
+                    player.EquipWeapon(new Game().weapons);
                     break;
                 case 2:
-                    Console.WriteLine("Вы нашли новое снаряжение!");
-                    Equipment newEquipment = new Equipment(RandomHelper.rand.Next(1, 11), "Броня " + RandomHelper.rand.Next(1, 100));
-                    player.EquipEquipment(newEquipment);
+                    player.EquipEquipment(new Game().equipments);
                     break;
             }
         }
@@ -87,13 +105,45 @@ namespace ISIP324_Kovalenko
             }
             if (!player.IsAlive())
             {
-                Console.WriteLine("Вы проиграли бой...");
+                Console.WriteLine("Вы проиграли бой");
             }
             else
             {
                 Console.WriteLine($"Вы победили {enemy.Name}!");
             }
         }
+
+        public static void StartGame()
+        {
+            Player player = Player.GetInstance();
+            int turnCount = 0;
+            Console.WriteLine("Добро пожаловать в игру!");
+            while (player.IsAlive())
+            {
+                turnCount++;
+                Console.WriteLine($"\nХод {turnCount}:");
+                if (turnCount % 10 == 0)
+                {
+                    Enemy boss = EnemyFabric.CreateEnemy();
+                    Console.WriteLine($"Вы встретили босса: {boss.Name}!");
+                    Battle(boss);
+                }
+                else
+                {
+                    if (RandomHelper.rand.Next(0, 2) == 0)
+                    {
+                        OpenChest();
+                    }
+                    else
+                    {
+                        Enemy enemy = GenerateEnemy();
+                        Battle(enemy);
+                    }
+                }
+            }
+            Console.WriteLine("Игра окончена. Вы проиграли.");
+        }
+
     }
 
     public class Player
@@ -158,8 +208,9 @@ namespace ISIP324_Kovalenko
                 }
             }
         }
-        public void EquipWeapon(Weapon newWeapon)
+        public void EquipWeapon(List<Weapon> weapons)
         {
+            Weapon newWeapon = weapons[RandomHelper.rand.Next(0, weapons.Count)];
             Console.WriteLine($"Вы нашли новое оружие: {newWeapon.Name} (Урон: {newWeapon.Damage}, Шанс крита: {newWeapon.CritChance * 100}%)");
             Console.WriteLine($"Текущее оружие: {Weapon.Name} (Урон: {Weapon.Damage}, Шанс крита: {Weapon.CritChance * 100}%)");
             Console.WriteLine("Хотите заменить текущее оружие на новое? (да/нет)");
@@ -175,8 +226,9 @@ namespace ISIP324_Kovalenko
             }
         }
 
-        public void EquipEquipment(Equipment newEquipment)
+        public void EquipEquipment(List<Equipment> equipments)
         {
+            Equipment newEquipment = equipments[RandomHelper.rand.Next(0, equipments.Count)];
             Console.WriteLine($"Вы нашли новое снаряжение: {newEquipment.Name} (Защита: {newEquipment.Defense})");
             Console.WriteLine($"Текущее снаряжение: {Equipment.Name} (Защита: {Equipment.Defense})");
             Console.WriteLine("Хотите заменить текущее снаряжение на новое? (да/нет)");
@@ -310,6 +362,7 @@ namespace ISIP324_Kovalenko
         public Gorlanov() : base()
         {
             Health = (int)(Health * 2.0);
+            MaxHealth = Health;
             Damage = Damage * 1.5m;
             Defense = Defense * 1.2m;
             CritChance += 0.1m;
@@ -321,6 +374,7 @@ namespace ISIP324_Kovalenko
         public Kovalskii() : base()
         {
             Health = (int)(Health * 2.5);
+            MaxHealth = Health;
             Damage = Damage * 1.3m;
             Defense = Defense * 1.4m;
             Name = "Ковальский";
@@ -331,6 +385,7 @@ namespace ISIP324_Kovalenko
         public Archmage() : base()
         {
             Health = (int)(Health * 1.8);
+            MaxHealth = Health;
             Damage = Damage * 1.6m;
             Defense = Defense * 1.1m;
             FreezeChance += 0.1m;
@@ -342,6 +397,7 @@ namespace ISIP324_Kovalenko
         public Pestov() : base()
         {
             Health = (int)(Health * 1.3);
+            MaxHealth = Health;
             Damage = Damage * 1.8m;
             Defense = Defense * 0.6m;
             FreezeChance += 0.15m;
@@ -350,78 +406,10 @@ namespace ISIP324_Kovalenko
     }
     internal class Program
     {
-//        Сделайте текстовую игру для консоли.Игра пошаговая: на каждом ходу случается одно из двух событий — игрок находит сундук или сталкивается со случайным врагом.
-
-// Сущности
- 
-
-// Игрок
-
-// Характеристики: здоровье (HP).
-
-
-// Экипировка: одно оружие и одни доспехи одновременно.
-
-
-// Враги
-
-// Общие характеристики: здоровье, атака, защита.
-
-// Особенности типов:
-
-
-// Гоблин — имеет шанс нанести критический урон.
-
-// Скелет — игнорирует защиту игрока.
-
-// Маг — имеет шанс наложить «заморозку» (игрок пропускает следующий ход).
-
-//Боссы
-
-//ВВГ(раса Гоблин)Сохраняет: шанс критического удара.Особые характеристики:Здоровье ×2.0 от базового гоблина.Атака ×1.5.Защита ×1.2.Шанс крита +10%. к значению обычного гоблина.
-
-//Ковальский(раса Скелет)Сохраняет: полностью игнорирует защиту игрока.Особые характеристики:Здоровье ×2.5.Атака ×1.3.Защита ×1.4.
-
-//Архимаг C++ (раса Маг) Сохраняет: шанс наложить заморозку (пропуск хода).Особые характеристики:Здоровье ×1.8.Атака ×1.6.Защита ×1.1.Шанс заморозки +10%. к значению обычного мага.
-
-//Пестов С-- (раса Скелет) Сохраняет: полностью игнорирует защиту игрока.Особые характеристики:Здоровье ×1.3.Атака ×1.8.Защита ×0.6.Шанс заморозки +15%. к значению обычного мага.
-
-//Ход игры
-
-//В начале каждого хода случайно определяется событие: сундук или враг (тип врага выбирается случайно из перечисленных) с шансом 50 на 50.
-
-//Если выпал враг, начинается бой.
-
-//Если выпал сундук, игрок получает случайный предмет.
-
-//Каждые 10 ходов игроку попадается случайный босс.
-
-//Бой
-
-//Игрок всегда ходит первым.
-
-//Ход игрока: выбрать Атаку или Защиту.
-
-//Защита даёт 40% шанс полностью уклониться от следующей атаки врага.Если уклониться не удалось, срабатывает блок: уменьшение получаемого урона на 70–100% от характеристики защиты.
-
-//После хода игрока враг всегда совершает атаку по игроку, применяя свои особенности (крит.шанс, игнор брони, заморозка).
-
-//Сундук и предметы
-
-//Из сундука может выпасть лечебное зелье, оружие или доспех (случайно).
-
-//Лечебное зелье мгновенно полностью лечит игрока.
-
-//При выпадении оружия или доспеха нужно:
-
-//Показать характеристики нового предмета и текущей экипировки.
-
-//Дать выбор: взять новый предмет (заменив текущий) или выбросить его.
-
-//Сделайте так, чтобы все шансы и случайные величины (встреча сундука/врага, тип врага, крит.шанс/заморозка, величина блока 70–100%) определялись генератором случайных чисел.
             static void Main(string[] args)
             {
-               
+             Game.StartGame();
+
             }
     }
 }
