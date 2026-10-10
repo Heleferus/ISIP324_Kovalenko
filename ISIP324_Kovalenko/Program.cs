@@ -6,14 +6,98 @@ using System.Threading.Tasks;
 
 namespace ISIP324_Kovalenko
 {
-    class Game
+    public static class RandomHelper
     {
-        Player player = Player.GetInstance();
+        public static Random rand = new Random();
+    }
+
+    public class Game
+    {
+        List<Weapon> weapons = new List<Weapon> 
+        { 
+        
+        
+        
+        };
+        public static Enemy GenerateEnemy()
+        {
+            return EnemyFabric.CreateEnemy();
+        }
+
+        public static void GenerateChest()
+        {
+            Player player = Player.GetInstance();
+            int itemType = RandomHelper.rand.Next(0, 3);
+            switch (itemType)
+            {
+                case 0:
+                    Console.WriteLine("Вы нашли лечебное зелье!");
+                    player.Heal();
+                    break;
+                case 1:
+                    Console.WriteLine("Вы нашли новое оружие!");
+                    Weapon newWeapon = new Weapon(RandomHelper.rand.Next(5, 21), (decimal)RandomHelper.rand.NextDouble() * 0.2m, "Меч " + RandomHelper.rand.Next(1, 100));
+                    player.EquipWeapon(newWeapon);
+                    break;
+                case 2:
+                    Console.WriteLine("Вы нашли новое снаряжение!");
+                    Equipment newEquipment = new Equipment(RandomHelper.rand.Next(1, 11), "Броня " + RandomHelper.rand.Next(1, 100));
+                    player.EquipEquipment(newEquipment);
+                    break;
+            }
+        }
+
+        public static void Battle(Enemy enemy)
+        {
+            Player player = Player.GetInstance();
+            Console.WriteLine($"Вы столкнулись с {enemy.Name}!");
+            while (player.IsAlive() && enemy.IsAlive())
+            {
+                if (player.IsFrozen)
+                {
+                    Console.WriteLine("Вы заморожены и пропускаете ход!");
+                    player.IsFrozen = false;
+                }
+                else
+                {
+                    Console.WriteLine("Ваш ход! Выберите действие: 1 - Атака, 2 - Защита");
+                    string choice = Console.ReadLine();
+                    if (choice == "1")
+                    {
+                        decimal actualDamage = player.Weapon.Damage;
+                        if (RandomHelper.rand.NextDouble() < (double)player.Weapon.CritChance)
+                        {
+                            actualDamage *= 2;
+                            Console.WriteLine("Вы наносите критический удар!");
+                        }
+                        enemy.Health -= (int)actualDamage;
+                        Console.WriteLine($"Вы нанесли {actualDamage} урона {enemy.Name}. Текущее здоровье врага: {enemy.Health}/{enemy.MaxHealth}");
+                    }
+                    else if (choice == "2")
+                    {
+                        player.IsDefending = true;
+                        Console.WriteLine("Вы выбрали защиту! Уклонение от следующей атаки врага увеличено.");
+                    }
+                }
+                if (enemy.IsAlive())
+                {
+                    enemy.AttackPlayer(player);
+                }
+                player.IsDefending = false; 
+            }
+            if (!player.IsAlive())
+            {
+                Console.WriteLine("Вы проиграли бой...");
+            }
+            else
+            {
+                Console.WriteLine($"Вы победили {enemy.Name}!");
+            }
+        }
     }
 
     public class Player
     {
-        static Random rnd = new Random();
         private Player()
         {
             MaxHealth = 100;
@@ -52,7 +136,7 @@ namespace ISIP324_Kovalenko
         {
             if (IsDefending)
             {
-                decimal blockChance = (decimal)rnd.Next(70, 101) / 100m;
+                decimal blockChance = (decimal)RandomHelper.rand.Next(70, 101) / 100m;
                 damage *= (1 - blockChance);
                 Console.WriteLine($"Вы защищаетесь! Урон уменьшен на {blockChance * 100}%.");
             }
@@ -67,7 +151,7 @@ namespace ISIP324_Kovalenko
             if (IsDefending)
             {
                 decimal avoidChance = 0.4m;
-                if (rnd.NextDouble() < (double)avoidChance)
+                if (RandomHelper.rand.NextDouble() < (double)avoidChance)
                 {
                     Console.WriteLine("Вы успешно уклонились от атаки врага!");
                     return;
@@ -187,9 +271,8 @@ namespace ISIP324_Kovalenko
 
         public void AttackPlayer(Player player)
         {
-            Random rnd = new Random();
             decimal actualDamage = Damage;
-            if (rnd.NextDouble() < (double)CritChance)
+            if (RandomHelper.rand.NextDouble() < (double)CritChance)
             {
                 actualDamage *= 2;
                 Console.WriteLine($"{Name} наносит критический удар!");
@@ -199,6 +282,11 @@ namespace ISIP324_Kovalenko
                 Console.WriteLine($"{Name} игнорирует вашу защиту!");
                 player.TakeDamage(actualDamage);
             }
+            if (RandomHelper.rand.NextDouble() < (double)FreezeChance)
+            {
+                player.IsFrozen = true;
+                Console.WriteLine($"{Name} наложил заморозку! Вы пропускаете следующий ход.");
+            }   
             else
             {
                 player.TakeDamage(actualDamage);
@@ -207,15 +295,15 @@ namespace ISIP324_Kovalenko
     }
     public class Goblin : Enemy
     {
-        public Goblin() : base(50, 10, 5, 0.1m, 0, "Гоблин") {}
+        public Goblin() : base(RandomHelper.rand.Next(40, 61), 10, 5, 0.1m, 0, "Гоблин") {}
     }
     public class Skeleton : Enemy
     {
-        public Skeleton() : base(40, 8, 3, 0, 0, "Скелет", true) { }
+        public Skeleton() : base(RandomHelper.rand.Next(30, 51), RandomHelper.rand.Next(5, 16), RandomHelper.rand.Next(1, 11), 0, 0, "Скелет", true) { }
     }
     public class Mage : Enemy
     {
-        public Mage() : base(30, 12, 2, 0, 0.1m, "Маг") { }
+        public Mage() : base(RandomHelper.rand.Next(20, 41), RandomHelper.rand.Next(10, 21), RandomHelper.rand.Next(0, 3), 0, 0.1m, "Маг") { }
     }
     public class Gorlanov : Goblin
     {
