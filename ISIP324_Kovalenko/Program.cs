@@ -10,6 +10,7 @@ namespace ISIP324_Kovalenko
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
