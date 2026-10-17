@@ -77,6 +77,79 @@ namespace ISIP324_Kovalenko
                     Console.WriteLine("Товар с таким ID не найден.");
                 }
             }
+
+            void ViewCart()
+            {
+                var cartItems = Core.Context.CartItems.ToList();
+                Console.WriteLine("Содержимое корзины:");
+                foreach (var item in cartItems)
+                {
+                    var product = Core.Context.Products.FirstOrDefault(p => p.ProductID == item.ProductID);
+                    if (product != null)
+                    {
+                        Console.WriteLine($"Товар: {product.Name}, Количество: {item.Quantity}, Цена за единицу: {product.Price}");
+                    }
+                }
+            }
+
+            void Buy()
+            {
+                Console.WriteLine("Выберите ПВЗ:");
+                var pickupPoints = Core.Context.PickUpPoints.ToList();
+                foreach (var point in pickupPoints)
+                {
+                    Console.WriteLine($"ID: {point.PointID}, Адрес: {point.Address}");
+                }
+                Console.Write("Введите ID выбранного ПВЗ: ");
+                int pickupPointId = int.Parse(Console.ReadLine());
+                var selectedPickupPoint = Core.Context.PickUpPoints.FirstOrDefault(p => p.PointID == pickupPointId);
+                Console.WriteLine("Вы хотите купить все товары из корзины?");
+                string choice = Console.ReadLine();
+                if (choice.ToLower() == "да")
+                {
+                    var cartItems = Core.Context.CartItems.ToList();
+                    foreach (var item in cartItems)
+                    {
+                        var order = new Orders
+                        {
+                            ProductID = item.ProductID,
+                            Quantity = item.Quantity,
+                            PickupPointID = pickupPointId,
+                            OrderDate = DateTime.Now
+                        };
+                        Core.Context.Orders.Add(order);
+                    }
+                    Core.Context.CartItems.RemoveRange(cartItems);
+                    Core.Context.SaveChanges();
+                    Console.WriteLine("Все товары из корзины успешно куплены!");
+                }
+                else
+                {
+                    Console.Write("Введите ID товара для покупки: ");
+                    int productId = int.Parse(Console.ReadLine());
+                    var cartItem = Core.Context.CartItems.FirstOrDefault(c => c.ProductID == productId);
+                    if (cartItem != null)
+                    {
+                        var order = new Orders
+                        {
+                            ProductID = cartItem.ProductID,
+                            Quantity = cartItem.Quantity,
+                            PickupPointID = pickupPointId,
+                            OrderDate = DateTime.Now
+                        };
+                        Core.Context.Orders.Add(order);
+                        Core.Context.CartItems.Remove(cartItem);
+                        Core.Context.SaveChanges();
+                        Console.WriteLine($"Товар с ID {productId} успешно куплен!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Товар с таким ID не найден в корзине.");
+                    })
+            }
+
+
+
         }
     }
 }
