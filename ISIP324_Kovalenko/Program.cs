@@ -12,6 +12,7 @@ namespace ISIP324_Kovalenko
         static void Main(string[] args)
         {
 
+            Users currentuser = null;
             bool loggedin = false;
             void RegisterUser()
             {
@@ -52,8 +53,9 @@ namespace ISIP324_Kovalenko
                 if (user != null)
                 {
                     Console.WriteLine($"Добро пожаловать, {login}!");
+                    currentuser = user;
                     loggedin = true;
-                    
+
                 }
                 else
                 {
@@ -82,7 +84,7 @@ namespace ISIP324_Kovalenko
 
             void ViewCart()
             {
-                var cartItems = Core.Context.CartItems.ToList();
+                var cartItems = Core.Context.CartItems.Where(c => c.UserID == currentuser.UserID).ToList();
                 Console.WriteLine("Содержимое корзины:");
                 foreach (var item in cartItems)
                 {
@@ -115,7 +117,7 @@ namespace ISIP324_Kovalenko
                 string choice = Console.ReadLine();
                 if (choice.ToLower() == "да")
                 {
-                    var cartItems = Core.Context.CartItems.ToList();
+                    var cartItems = Core.Context.CartItems.Where(c => c.UserID == currentuser.UserID).ToList();
                     if (cartItems.Count == 0)
                     {
                         Console.WriteLine("Корзина пуста.");
@@ -151,34 +153,56 @@ namespace ISIP324_Kovalenko
                 }
                 else
                 {
-                    Console.Write("Введите ID товара для покупки: ");
-                    int productId = int.Parse(Console.ReadLine());
-                    var product = Core.Context.Products.FirstOrDefault(p => p.ProductID == productId);
-                    if (product != null)
+                    var cartItems = Core.Context.CartItems.Where(c => c.UserID == currentuser.UserID).ToList();
+                    if (cartItems.Count == 0)
                     {
-                        Console.Write("Введите количество: ");
-                        int quantity = int.Parse(Console.ReadLine());
-                        var order = new Orders
-                        {
-                            PointID = selectedPickupPoint.PointID,
-                            OrderDate = DateTime.Now,
-                            TotalAmount = product.Price * quantity,
-                            Status = "Создан"
-                        };
-                        order.OrderItems.Add(new OrderItems
-                        {
-                            Products = product,
-                            Quantity = quantity,
-                            PriceAtPurchase = product.Price
-                        });
-                        Core.Context.Orders.Add(order);
-                        Core.Context.SaveChanges();
-                        Console.WriteLine($"Товар {product.Name} успешно куплен!");
+                        Console.WriteLine("Корзина пуста.");
+                        return;
                     }
-                    else
+
+                    Console.WriteLine("Выберите товар из корзины для покупки:");
+                    foreach (var item in cartItems)
                     {
-                        Console.WriteLine("Товар с таким ID не найден.");
+                        var cartProduct = Core.Context.Products.FirstOrDefault(p => p.ProductID == item.ProductID);
+                        if (cartProduct != null)
+                        {
+                            Console.WriteLine($"ID позиции: {item.CartItemID}, Товар: {cartProduct.Name}, Количество: {item.Quantity}, Цена за единицу: {cartProduct.Price}");
+                        }
                     }
+
+                    Console.Write("Введите ID позиции в корзине: ");
+                    int cartItemId = int.Parse(Console.ReadLine());
+                    var selectedCartItem = cartItems.FirstOrDefault(item => item.CartItemID == cartItemId);
+                    if (selectedCartItem == null)
+                    {
+                        Console.WriteLine("Позиция с таким ID не найдена в корзине.");
+                        return;
+                    }
+
+                    var product = Core.Context.Products.FirstOrDefault(p => p.ProductID == selectedCartItem.ProductID);
+                    if (product == null)
+                    {
+                        Console.WriteLine("Товар из выбранной позиции не найден.");
+                        return;
+                    }
+
+                    var order = new Orders
+                    {
+                        PointID = selectedPickupPoint.PointID,
+                        OrderDate = DateTime.Now,
+                        TotalAmount = product.Price * selectedCartItem.Quantity,
+                        Status = "Создан"
+                    };
+                    order.OrderItems.Add(new OrderItems
+                    {
+                        Products = product,
+                        Quantity = selectedCartItem.Quantity,
+                        PriceAtPurchase = product.Price
+                    });
+                    Core.Context.Orders.Add(order);
+                    Core.Context.CartItems.Remove(selectedCartItem);
+                    Core.Context.SaveChanges();
+                    Console.WriteLine($"Товар {product.Name} успешно куплен!");
                 }
 
             }
@@ -188,19 +212,19 @@ namespace ISIP324_Kovalenko
                 Console.WriteLine("Список заказов:");
                 foreach (var order in orders)
                 {
-                    Console.WriteLine($"ID заказа: {order.OrderID}, Дата: {order.OrderDate}, Сумма: {order.TotalAmount}, Статус: {order.Status}");
+                    Console.WriteLine($"ID заказа: {order.OrderID}, Дата: {order.OrderDate}, Сумма: {order.TotalAmount}, Статус: {order.Status}, ID точки выдачи: {order.PointID}");
                 }
             }
 
             void menu()
             {
-                Console.WriteLine("Добропожаловать вмагазин");
+                Console.WriteLine("Добро пожаловать в магазин");
                 while (true)
                 {
                     Console.WriteLine("1 - registry, 2 - login, 3 - viewTovari");
                     if (loggedin) { Console.WriteLine("4 - viewCart, 5 - Buy, 6 - viewOrders, 7- Add"); } else { Console.WriteLine("С логином будет больше"); }
                 ;
-                    Console.Write("ЧД? ");
+                    Console.Write("Что делаем? ");
                     int action = int.Parse(Console.ReadLine());
                     switch (action)
                     {
@@ -220,11 +244,4 @@ namespace ISIP324_Kovalenko
     }
 }
 
-//Разработать консольное приложение - онлайн маркетплейс GMWOG||GG.MOW||WONGG.
 
-//У маркетплейса должна быть своя база данных, нормализованная под 3НФ. 
-//Создайте консольное приложение, в котором должна быть регистрация пользователя с подтверждением пароля, просмотр товаров (даже для незарегистрированного пользователя).
-//Должна быть корзина товаров и покупка как одного предмета, так и всех предметов из всей корзины сразу. 
-//При покупке, пользователь должен выбирать ПВЗ (пункт выдачи заказов) из доступных. 
-//Должен быть функционал для просмотра заказов с сортировкой по дате, когда был сделан заказ. 
-//Также, реализуйте возможность зайти в аккаунт уже зарегистрированного пользователя.
